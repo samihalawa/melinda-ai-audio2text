@@ -89,20 +89,24 @@
             </div>
         </div>
     </footer>
-    <script>document.addEventListener('DOMContentLoaded', () => {
+     
+<script>
+
+
+document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const progressElement = document.getElementById('progress');
     const statusMessage = document.getElementById('statusMessage');
     const transcriptContainer = document.getElementById('transcriptionContainer');
     const transcriptContent = document.getElementById('transcriptContent');
     const saveButton = document.getElementById('saveBtn');
-    the copyButton = document.getElementById('copyBtn');
+    const copyButton = document.getElementById('copyBtn');
 
     fileInput.addEventListener('change', async () => {
         const file = fileInput.files[0];
         if (!file) return;
         if (!file.type.startsWith('audio/') && !file.type.startsWith('video/')) {
-            alert('Please select an audio or video file.');
+            alert('Please select a valid audio or video file.');
             return;
         }
         progressElement.style.display = 'block';
@@ -112,7 +116,7 @@
 
         try {
             const response = await uploadAndTranscribe(file);
-            transcriptContent.innerHTML = response.data.text;
+            transcriptContent.innerHTML = formatTranscription(response.data.text);
             statusMessage.textContent = 'Transcription completed!';
             saveButton.disabled = false;
             copyButton.disabled = false;
@@ -137,6 +141,10 @@
             .catch(err => alert('Error copying: ' + err));
         }
     });
+
+    function formatTranscription(text) {
+        return text.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    }
 
     async function uploadAndTranscribe(file) {
         const formData = new FormData();
@@ -166,6 +174,7 @@
         link.click();
     }
 });
+
 </script>
 </body>
 </html>
