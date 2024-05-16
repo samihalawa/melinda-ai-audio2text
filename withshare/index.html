@@ -6,25 +6,23 @@
     <title>MelindaAI Transcriber</title>
     <meta name="description" content="Transcribe audio and video files quickly and easily with MelindaAI Transcriber.">
     <meta name="keywords" content="transcription, audio transcription, video transcription, MelindaAI, AI transcription">
-
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <!-- Favicon and PWA -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
-    <link rel="manifest" href="/icons/site.webmanifest">
-    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="shortcut icon" href="/icons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="mask-icon" href="./icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./icons/favicon.ico">
     <meta name="apple-mobile-web-app-title" content="Melinda AI">
     <meta name="application-name" content="Melinda AI">
     <meta name="msapplication-TileColor" content="#603cba">
-    <meta name="msapplication-TileImage" content="/icons/mstile-144x144.png">
-    <meta name="msapplication-config" content="/icons/browserconfig.xml">
+    <meta name="msapplication-TileImage" content="./icons/mstile-144x144.png">
+    <meta name="msapplication-config" content="./icons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 </head>
 <body class="bg-gray-100 font-sans">
@@ -145,7 +143,7 @@
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Contact Us</h1>
                 <div class="mt-4">
-                    <p class="text-lg text-gray-700">If you have any questions or feedback, please feel free to contact us at <a href="mailto:hello@melindaai.com" class="text-blue-600">hello@melindaai.com</a>.</p>
+                    <p class="text-lg text-gray-700 ">If you have any questions or feedback, please feel free to contact us at <a href="mailto:hello@melindaai.com" class="text-blue-600">hello@melindaai.com</a>.</p>
                     <p class="text-lg text-gray-700">You can also reach us by mail at:</p>
                     <address class="mt-4 text-lg text-gray-700">
                         <strong>MelindaAI Transcriber</strong><br>
@@ -189,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Register service worker for PWA
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js').then(registration => {
+            navigator.serviceWorker.register('./service-worker.js').then(registration => {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
             }, err => {
                 console.log('ServiceWorker registration failed: ', err);
@@ -254,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData,
             {
                 headers: {
-                    'Authorization': 'Bearer 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',
+                    'Authorization': 'Bearer YOUR_API_KEY',
                     'Content-Type': 'multipart/form-data'
                 },
                 onUploadProgress: (progressEvent) => {
