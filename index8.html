@@ -1,0 +1,182 @@
+Here's a rewritten HTML code that incorporates modern design principles, improved user experience, and better functionality. I've used Bulma CSS framework to create a responsive and modern interface.
+
+**MelindaAI Transcriber**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MelindaAI Transcriber</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+   .hero {
+      background-color: #f7f7f7;
+    }
+   .hero-body {
+      padding: 2rem;
+    }
+   .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+   .file-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+   .progress {
+      margin-top: 20px;
+    }
+   .transcript-container {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f7f7f7;
+    }
+   .buttons {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="logo.png" alt="MelindaAI Transcriber">
+      </a>
+    </div>
+  </nav>
+
+  <section class="hero is-fullheight">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">MelindaAI Transcriber</h1>
+        <h2 class="subtitle">Transcribe audio and video files with the power of AI</h2>
+
+        <form>
+          <div class="field">
+            <label class="label">Select a file</label>
+            <div class="file has-name is-fullwidth">
+              <input class="file-input" type="file" id="fileInput" accept="audio/*, video/*">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">Choose a file...</span>
+              </span>
+              <span class="file-name"></span>
+            </div>
+          </div>
+
+          <progress class="progress is-primary" max="100" id="progress" value="0" style="display: none;"></progress>
+          <div id="statusMessage" class="has-text-centered mt-4 mb-4"></div>
+
+          <div class="transcript-container">
+            <div id="transcript" class="transcript"></div>
+          </div>
+
+          <div class="buttons has-text-centered mt-4">
+            <button class="button is-primary" id="saveBtn" disabled>
+              <i class="fas fa-save"></i> Export Transcription
+            </button>
+            <button class="button is-link" id="copyBtn" disabled>
+              <i class="fas fa-copy"></i> Copy to Clipboard
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    const progressElement = document.getElementById('progress');
+    const statusMessage = document.getElementById('statusMessage');
+    const transcriptContainer = document.getElementById('transcript');
+    const saveButton = document.getElementById('saveBtn');
+    const copyButton = document.getElementById('copyBtn');
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      // Validate file type and size
+      if (!file.type.startsWith('audio/') &&!file.type.startsWith('video/')) {
+        alert('Invalid file type. Please upload an audio or video file.');
+        return;
+      }
+
+      if (file.size > 100 * 1024 * 1024) {
+        alert('File size is too large. Please upload a file smaller than 100MB.');
+        return;
+      }
+
+      progressElement.style.display = 'block';
+      statusMessage.textContent = 'Uploading and transcribing...';
+      saveButton.disabled = true;
+      copyButton.disabled = true;
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const apiKey = 'YOUR_OPENAI_API_KEY';
+        const endpoint = 'https://api.openai.com/v1/audio/transcriptions';
+        const headers = {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'ultipart/form-data',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        };
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: formData,
+          headers: headers
+        });
+
+        const transcription = await response.json();
+        const transcriptText = transcription.text;
+
+        transcriptContainer.innerText = transcriptText;
+        statusMessage.textContent = 'Transcription completed!';
+        saveButton.disabled = false;
+        copyButton.disabled = false;
+      } catch (error) {
+        console.error(error);
+        statusMessage.textContent = 'Error occurred during transcription.';
+      }
+    });
+
+    saveButton.addEventListener('click', () => {
+      const transcriptText = transcriptContainer.innerText;
+      const blob = new Blob([transcriptText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'transcript.txt';
+      a.click();
+    });
+
+    copyButton.addEventListener('click', () => {
+      const transcriptText = transcriptContainer.innerText;
+      navigator.clipboard.writeText(transcriptText);
+    });
+  });
+</script>
+ 
+</body>
+</html>
