@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MelindaAI Transcriber</title>
+  <meta name="description" content="Transcribe audio and video files quickly and easily with MelindaAI Transcriber.">
+  <meta name="keywords" content="transcription, audio transcription, video transcription, MelindaAI, AI transcription">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@radix-ui/core@latest/dist/index.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script defer src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('Service Worker registered:', reg))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    }
+
+    function showView(viewId) {
+      const views = document.querySelectorAll('.view');
+      views.forEach(view => view.style.display = 'none');
+      document.getElementById(viewId).style.display = 'block';
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      color: #4a4a4a;
+    }
+    .hero {
+      background: #2d3748;
+      color: white;
+      padding: 3rem 1.5rem;
+    }
+    .hero .title {
+      font-size: 3rem;
+    }
+    .hero .subtitle {
+      font-size: 1.5rem;
+    }
+    .file.is-centered {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .file-label {
+      cursor: pointer;
+    }
+    .progress {
+      margin-top: 1rem;
+    }
+    .textarea {
+      margin-top: 1rem;
+    }
+    .buttons {
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .footer {
+      background: #2d3748;
+      color: white;
+      padding: 2rem 0;
+    }
+    .footer a {
+      color: white;
+      text-decoration: underline;
+    }
+    .navbar {
+      background: #2d3748;
+      padding: 1rem;
+    }
+    .navbar .navbar-brand, .navbar .navbar-menu, .navbar .navbar-item {
+      color: white;
+    }
+    .navbar .navbar-burger {
+      color: white;
+    }
+    @media (max-width: 768px) {
+      .file {
+        width: 100%;
+      }
+      .textarea {
+        height: 200px;
+      }
+      .hero .title {
+        font-size: 2rem;
+      }
+      .hero .subtitle {
+        font-size: 1rem;
+      }
+    }
+    .view {
+      display: none;
+    }
+    .view.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="javascript:void(0);" onclick="showView('home')">
+        MelindaAI
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('home')">Home</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('terms')">Terms of Service</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('privacy')">Privacy Policy</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('about')">About Us</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('contact')">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home" class="view active">
+    <section class="hero is-primary">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title">MelindaAI Transcriber</h1>
+          <h2 class="subtitle">Transcribe your audio and video files effortlessly</h2>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <div class="container">
+        <div class="box">
+          <div class="file is-boxed is-centered">
+            <label class="file-label">
+              <input class="file-input" type="file" id="fileInput" accept="audio/*, video/*">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">Choose a file...</span>
+              </span>
+            </label>
+          </div>
+          
+          <progress class="progress is-primary" max="100" id="progress" value="0" style="display: none;"></progress>
+          <div id="statusMessage" class="has-text-centered mt-4 mb-4"></div>
+          
+          <textarea class="textarea" id="transcript" readonly placeholder="Transcription will appear here..."></textarea>
+          
+          <div class="buttons has-text-centered mt-4">
+            <button class="button is-primary" id="saveBtn" disabled>
+              <i class="fas fa-save"></i> Save Transcription
+            </button>
+            <button class="button is-link" id="copyBtn" disabled>
+              <i class="fas fa-copy"></i> Copy Transcription
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="terms" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Terms of Service</h1>
+        <div class="content">
+          <p>Welcome to MelindaAI. Please read these terms of service carefully before using our website.</p>
+          <!-- Add more terms of service content here -->
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="privacy" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Privacy Policy</h1>
+        <div class="content">
+          <p>Your privacy is important to us. This privacy policy explains how we handle your personal information.</p>
+          <!-- Add more privacy policy content here -->
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="about" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">About Us</h1>
+        <div class="content">
+          <p>MelindaAI is dedicated to providing the best transcription services using the latest AI technology.</p>
+          <!-- Add more about us content here -->
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="contact" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Contact Us</h1>
+        <div class="content">
+          <p>If you have any questions or feedback, please feel free to contact us at contact@melindaai.com.</p>
+          <!-- Add more contact information here -->
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <div class="columns">
+        <div class="column">
+          <p>
+            <strong>MelindaAI Transcriber</strong> by <a href="https://melindaai.com">MelindaAI</a>.
+          </p>
+        </div>
+        <div class="column">
+          <p>
+            <a href="javascript:void(0);" onclick="showView('terms')">Terms of Service</a> | <a href="javascript:void(0);" onclick="showView('privacy')">Privacy Policy</a>
+          </p>
+        </div>
+        <div class="column">
+          <p>
+            <a href="javascript:void(0);" onclick="showView('about')">About Us</a> | <a href="javascript:void(0);" onclick="showView('contact')">Contact</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+
