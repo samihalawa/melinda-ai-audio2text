@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MelindaAI Transcriber</title>
+  <meta name="description" content="Transcribe audio and video files quickly and easily with MelindaAI Transcriber.">
+  <meta name="keywords" content="transcription, audio transcription, video transcription, MelindaAI, AI transcription">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+ <!-- <script defer src="script.js"></script> -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('Service Worker registered:', reg))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    }
+
+    function showView(viewId) {
+      const views = document.querySelectorAll('.view');
+      views.forEach(view => view.style.display = 'none');
+      document.getElementById(viewId).style.display = 'block';
+    }
+  </script>
+<script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('Service Worker registered:', reg))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    }
+
+    function showView(viewId) {
+      const views = document.querySelectorAll('.view');
+      views.forEach(view => view.style.display = 'none');
+      document.getElementById(viewId).style.display = 'block';
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      color: #4a4a4a;
+    }
+    .hero {
+      background: #2d3748;
+      color: white;
+      padding: 1rem 1.5rem;
+    }
+    .hero .title {
+      font-size: 2.4em !important;
+    }
+    .hero .subtitle {
+      font-size: 1.6em !important;
+      margin-top:2px !important;
+    }
+    .file.is-centered {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .file-label {
+      cursor: pointer;
+    }
+    .progress {
+      margin-top: 1rem;
+    }
+    .textarea {
+      margin-top: 1rem;
+    }
+    .buttons {
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .footer {
+      background: #2d3748;
+      color: white;
+      padding: 2rem 0;
+    }
+    .footer a {
+      color: white;
+      text-decoration: underline;
+    }
+    .navbar {
+      background: #2d3748;
+      padding: 1rem;
+    }
+    .navbar  .navbar .navbar-menu, .navbar .navbar-item {
+      color: gray;
+    }
+    .title1
+    {
+	    color:white !important;
+	    font-weight:bolder;
+	    font-size:1.2em;
+	    opacity:0.9;
+	    }
+    .navbar .navbar-burger {
+      color: white;
+    }
+    @media (max-width: 768px) {
+      .file {
+        width: 100%;
+      }
+      .textarea {
+        height: 200px;
+      }
+      .hero .title {
+        font-size: 2rem;
+      }
+      .hero .subtitle {
+        font-size: 1rem;
+      }
+    }
+    .view {
+      display: none;
+    }
+    .view.active {
+      display: block;
+    }
+  </style></head>
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item title1" href="javascript:void(0);" onclick="showView('home')">
+        Melinda<span style="color:lightgray !important;">AI</span>
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('home')">Audio2Text</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('terms')">Terms of Service</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('privacy')">Privacy Policy</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('about')">About Us</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('contact')">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home" class="view active">
+    <section class="hero is-primary">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title">MelindaAI Transcriber</h1>
+          <h2 class="subtitle">Transcribe audio and video files with the power of AI</h2>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <div class="container">
+        <div class="box">
+          <div class="file is-boxed is-centered">
+            <label class="file-label">
+              <input class="file-input" type="file" id="fileInput" accept="audio/*, video/*">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span style="font-size:1.3em;"class="file-label">Choose a file...</span>
+                <small style="opacity:0.7; font-weight:bolder;">Audio and Video Files Supported!</small>
+              </span>
+            </label>
+          </div>
+          
+          <progress class="progress is-primary" max="100" id="progress" value="0" style="display: none;"></progress>
+          <div id="statusMessage" class="has-text-centered mt-4 mb-4"></div>
+          
+          <textarea class="textarea" id="transcript" readonly placeholder="Transcription will appear here..."></textarea>
+          
+          <div class="buttons has-text-centered mt-4">
+            <button class="button is-primary" id="saveBtn" disabled>
+              <i class="fas fa-save"></i><span class="px-1">  </span>Export Transcription
+            </button>
+            <button class="button is-link" id="copyBtn" disabled>
+              <i class="fas fa-copy"></i> <span class="px-1">  </span>Copy to Clipboard
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="terms" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Terms of Service</h1>
+        <div class="content">
+          <h2>Welcome to MelindaAI</h2>
+          <p>Please read these terms of service carefully before using our website. By accessing or using our services, you agree to be bound by these terms.</p>
+          <h3>Use of the Services</h3>
+          <p>MelindaAI provides transcription services using artificial intelligence technology. You must be at least 18 years old to use our services. By using our services, you represent and warrant that you have the legal capacity to form a binding contract with MelindaAI.</p>
+          <h3>User Content</h3>
+          <p>You retain ownership of any intellectual property rights in the content you upload to our services. However, by uploading content, you grant MelindaAI a non-exclusive, worldwide, royalty-free license to use, copy, reproduce, process, adapt, modify, publish, transmit, display, and distribute such content in connection with the provision of our services.</p>
+          <h3>Prohibited Uses</h3>
+          <p>You may not use our services for any unlawful or prohibited purpose. You must not upload content that is illegal, offensive, threatening, libelous, defamatory, obscene, or otherwise objectionable.</p>
+          <h3>Disclaimer of Warranties</h3>
+          <p>Our services are provided "as is" and "as available" without warranties of any kind, either express or implied. MelindaAI disclaims all warranties, express or implied, including but not limited to, implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+          <h3>Limitation of Liability</h3>
+          <p>MelindaAI shall not be liable for any damages arising from your use of our services, including but not limited to, direct, indirect, incidental, punitive, and consequential damages.</p>
+          <h3>Changes to the Terms</h3>
+          <p>We reserve the right to modify these terms at any time. Your continued use of our services after any such changes shall constitute your consent to such changes.</p>
+          <h3>Governing Law and Jurisdiction</h3>
+          <p>These terms shall be governed by and construed in accordance with the laws of the jurisdiction where MelindaAI is located. Any disputes arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the courts located in that jurisdiction.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="privacy" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Privacy Policy</h1>
+        <div class="content">
+          <h2>Your privacy is important to us</h2>
+          <p>This privacy policy explains how we handle your personal information.</p>
+          <h3>Information We Collect</h3>
+          <p>We collect information about you when you use our services, such as your name, email address, and payment information. We may also collect information about your use of our services, including your IP address, browser type, and device information.</p>
+          <h3>How We Use Your Information</h3>
+          <p>We use your information to provide and improve our services, to communicate with you, and to personalize your experience. We may also use your information for security purposes, to detect and prevent fraud, and to enforce our terms of service.</p>
+          <h3>Sharing Your Information</h3>
+          <p>We may share your information with third-party service providers who perform services on our behalf, such as payment processing and customer support. We may also share your information if required by law, to protect our rights, or in the event of a merger or acquisition.</p>
+          <h3>Cookies</h3>
+          <p>We use cookies and similar technologies to collect information about your use of our services. You can control the use of cookies at the individual browser level.</p>
+          <h3>Your Choices</h3>
+          <p>You can control the information we collect about you by adjusting your browser settings, opting out of cookies, or not providing us with certain information. However, please note that some features of our services may not be available if you choose not to provide us with certain information.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="about" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">About Us</h1>
+        <div class="content">
+          <h2>MelindaAI is dedicated to providing the best transcription services using the latest AI technology.</h2>
+          <p>Our mission is to help people transcribe their audio and video files quickly and easily, saving them time and effort. We use state-of-the-art artificial intelligence algorithms to accurately transcribe speech in multiple languages and dialects.</p>
+          <p>Our team consists of experienced professionals in the fields of artificial intelligence, natural language processing, and software development. We are committed to delivering high-quality transcription services and continuously improving our technology.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="contact" class="view">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Contact Us</h1>
+        <div class="content">
+          <p>If you have any questions or feedback, please feel free to contact us at hello@melindaai.com.</p>
+          <p>You can also reach us by mail at:</p>
+          <p><b>Suotta Ltd.</b><br>
+
+          Unit 5-7, 15/F Yu Sung Boon Bldg <br> 107-111 Des Voeux Rd C <br>Central, Hong Kong
+
+          
+
+          Country</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <div class="columns">
+        <div class="column">
+          <p>
+            <span style="color:gray; font-size:1.1em; font-weight:bolder;">MelindaAI Transcriber</span> by <a href="https://melindaai.com">MelindaAI</a>.
+          </p>
+        </div>
+        <div class="column">
+          <p>
+            <a href="javascript:void(0);" onclick="showView('terms')">Terms of Service</a> | <a href="javascript:void(0);" onclick="showView('privacy')">Privacy Policy</a>
+          </p>
+        </div>
+        <div class="column">
+          <p>
+            <a href="javascript:void(0);" onclick="showView('about')">About Us</a> | <a href="javascript:void(0);" onclick="showView('contact')">Contact</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+	  document.addEventListener('DOMContentLoaded', () => {
+  const fileInput = document.getElementById('fileInput');
+  const progressElement = document.getElementById('progress');
+  const statusMessage = document.getElementById('statusMessage');
+  const transcriptArea = document.getElementById('transcript');
+  const saveButton = document.getElementById('saveBtn');
+  const copyButton = document.getElementById('copyBtn');
+
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('audio/') && !file.type.startsWith('video/')) {
+      alert('Please select an audio or video file.');
+      return;
+    }
+
+    progressElement.style.display = 'block';
+    statusMessage.textContent = 'Uploading and transcribing...';
+    saveButton.disabled = true;
+    copyButton.disabled = true;
+
+    try {
+      const response = await uploadAndTranscribe(file);
+      transcriptArea.value = response.data.text;
+      statusMessage.textContent = 'Transcription completed!';
+      saveButton.disabled = false;
+      copyButton.disabled = false;
+    } catch (error) {
+      console.error(error);
+      statusMessage.textContent = 'Error during transcription. Please try again.';
+    } finally {
+      progressElement.style.display = 'none';
+    }
+  });
+
+  saveButton.addEventListener('click', () => {
+    if (transcriptArea.value) {
+      saveTextAsFile(transcriptArea.value, 'transcription.txt');
+    }
+  });
+
+  copyButton.addEventListener('click', () => {
+    if (transcriptArea.value) {
+      navigator.clipboard.writeText(transcriptArea.value)
+        .then(() => alert('Transcription copied to clipboard!'))
+        .catch(err => alert('Error copying: ' + err));
+    }
+  });
+
+  async function uploadAndTranscribe(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('model', 'whisper-1');
+
+    return await axios.post(
+      'https://api.openai.com/v1/audio/transcriptions',
+      formData,
+      {
+        headers: {
+          'Authorization': 'Bearer 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',
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          progressElement.value = percentCompleted;
+        }
+      }
+    );
+  }
+
+  function saveTextAsFile(text, filename) {
+    const blob = new Blob([text], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  }
+});
+</script>
+	  
+</body>
+</html>
+
+
