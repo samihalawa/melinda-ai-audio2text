@@ -1,23 +1,4 @@
-" #!/bin/bash
 
-main() {
-    create_files
-    populate_files
-}
-
-create_files() {
-    touch index.html script.js service-worker.js manifest.json
-}
-
-populate_files() {
-    populate_index_html
-    populate_script_js
-    populate_service_worker_js
-    populate_manifest_json
-}
-
-populate_index_html() {
-    cat > index.html <<EOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
