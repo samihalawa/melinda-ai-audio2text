@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MelindaAI Transcriber</title>
+    <meta name="description" content="Transcribe audio and video files quickly and easily with MelindaAI Transcriber.">
+    <meta name="keywords" content="transcription, audio transcription, video transcription, MelindaAI, AI transcription">
+
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon and PWA -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Melinda AI">
+    <meta name="application-name" content="Melinda AI">
+    <meta name="msapplication-TileColor" content="#603cba">
+    <meta name="msapplication-TileImage" content="/icons/mstile-144x144.png">
+    <meta name="msapplication-config" content="/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+</head>
+<body class="bg-gray-100 font-sans">
+
+<nav class="bg-white shadow p-4">
+    <div class="container mx-auto flex items-center justify-between">
+        <!-- Logo and brand name -->
+        <a class="text-3xl font-bold text-gray-900" href="#" onclick="showView('home')">
+            Melinda<span class="text-gray-500">AI</span> Transcriber
+        </a>
+        <!-- Navbar menu items -->
+        <div class="flex space-x-4">
+            <a class="text-lg text-gray-600 hover:text-gray-900" href="#" onclick="showView('home')">Home</a>
+            <a class="text-lg text-gray-600 hover:text-gray-900" href="#" onclick="showView('features')">Features</a>
+            <a class="text-lg text-gray-600 hover:text-gray-900" href="#" onclick="showView('pricing')">Pricing</a>
+            <a class="text-lg text-gray-600 hover:text-gray-900" href="#" onclick="showView('about')">About</a>
+            <a class="text-lg text-gray-600 hover:text-gray-900" href="#" onclick="showView('contact')">Contact</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container mx-auto p-4">
+    <!-- Home section -->
+    <section id="home" class="view active">
+        <section class="bg-gray-900 text-white py-10">
+            <div class="text-center">
+                <!-- Main heading and subheading -->
+                <h1 class="text-5xl font-bold">MelindaAI Transcriber</h1>
+                <h2 class="text-2xl mt-2">Transcribe audio and video files with ease</h2>
+            </div>
+        </section>
+        <!-- Main content section -->
+        <section class="py-10">
+            <div class="bg-white rounded-lg shadow p-6">
+                <!-- File input section -->
+                <div class="text-center mb-4">
+                    <label class="block mb-2 text-lg font-medium text-gray-700">Select a file...</label>
+                    <input class="block w-full text-lg text-gray-700 border rounded p-2" type="file" id="fileInput" accept="audio/*, video/*" onchange="handleFileSelect()">
+                    <small class="block text-gray-500 font-semibold mt-1">Supported formats: MP3, WAV, AAC, FLAC, OGG, M4A, MP4, AVI, MKV, MOV, WEBM</small>
+                </div>
+                <!-- Voice recording button -->
+                <div class="text-center mb-4">
+                    <button class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700" onclick="startRecording()">
+                        <i class="fas fa-microphone"></i> Record Voice Note
+                    </button>
+                    <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500 ml-2" onclick="stopRecording()" id="stopRecordBtn" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Recording
+                    </button>
+                </div>
+                <!-- Progress bar for file upload -->
+                <progress class="w-full hidden" max="100" id="progress" value="0"></progress>
+                <!-- Status message for file processing -->
+                <div id="statusMessage" class="text-center mt-4 mb-4 text-gray-900"></div>
+                <!-- Transcription output textarea -->
+                <textarea class="w-full h-40 border rounded-lg p-4" id="transcript" readonly placeholder="Transcription will appear here..."></textarea>
+                <!-- Export and copy buttons -->
+                <div class="text-center mt-4 flex justify-center space-x-4">
+                    <button class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700" id="saveBtn" disabled>
+                        <i class="fas fa-save"></i> Export Transcription
+                    </button>
+                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300" id="copyBtn" disabled>
+                        <i class="fas fa-copy"></i> Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Features section -->
+    <section id="features" class="view hidden">
+        <section class="py-10">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Features</h1>
+                <div class="mt-4">
+                    <ul class="list-disc list-inside text-lg text-gray-700">
+                        <li>Accurate transcription with advanced AI algorithms.</li>
+                        <li>Support for multiple languages and dialects.</li>
+                        <li>Export transcriptions in various formats.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Pricing section -->
+    <section id="pricing" class="view hidden">
+        <section class="py-10">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Pricing</h1>
+                <div class="mt-4">
+                    <ul class="list-disc list-inside text-lg text-gray-700">
+                        <li>Basic Plan - $10/month</li>
+                        <li>Pro Plan - $20/month</li>
+                        <li>Enterprise Plan - Custom Pricing</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- About section -->
+    <section id="about" class="view hidden">
+        <section class="py-10">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">About Us</h1>
+                <div class="mt-4">
+                    <p class="text-lg text-gray-700">MelindaAI is dedicated to providing the best transcription services using the latest AI technology. Our mission is to help people transcribe their audio and video files quickly and easily, saving them time and effort. We use state-of-the-art artificial intelligence algorithms to accurately transcribe speech in multiple languages and dialects. Our team consists of experienced professionals in the fields of artificial intelligence, natural language processing, and software development. We are committed to delivering high-quality transcription services and continuously improving our technology.</p>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Contact section -->
+    <section id="contact" class="view hidden">
+        <section class="py-10">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Contact Us</h1>
+                <div class="mt-4">
+                    <p class="text-lg text-gray-700">If you have any questions or feedback, please feel free to contact us at <a href="mailto:hello@melindaai.com" class="text-blue-600">hello@melindaai.com</a>.</p>
+                    <p class="text-lg text-gray-700">You can also reach us by mail at:</p>
+                    <address class="mt-4 text-lg text-gray-700">
+                        <strong>MelindaAI Transcriber</strong><br>
+                        Unit 5-7, 15/F Yu Sung Boon Bldg<br>
+                        107-111 Des Voeux Rd C<br>
+                        Central, Hong Kong
+                    </address>
+                </div>
+            </div>
+        </section>
+    </section>
+</main>
+
+<footer class="bg-white shadow py-4 mt-10">
+    <div class="container mx-auto text-center">
+        <div class="flex justify-center space-x-8">
+            <p class="text-gray-500 text-lg">MelindaAI Transcriber by <a href="https://melindaai.com" class="text-blue-600">MelindaAI</a>.</p>
+            <p><a href="#" class="text-blue-600" onclick="showView('features')">Features</a> | <a href="#" class="text-blue-600" onclick="showView('pricing')">Pricing</a></p>
+            <p><a href="#" class="text-blue-600" onclick="showView('about')">About</a> | <a href="#" class="text-blue-600" onclick="showView('contact')">Contact</a></p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+// JavaScript logic for file handling and UI interactions
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    const progressElement = document.getElementById('progress');
+    const statusMessage = document.getElementById('statusMessage');
+    const transcriptContent = document.getElementById('transcript');
+    const saveButton = document.getElementById('saveBtn');
+    const copyButton = document.getElementById('copyBtn');
+    const stopRecordBtn = document.getElementById('stopRecordBtn');
+    let mediaRecorder;
+    let audioChunks = [];
+
+    fileInput.addEventListener('change', handleFileSelect);
+
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }, err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
+
+    // Handle shared files
+    navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data && event.data.type === 'TRANSCRIBE_FILE') {
+            handleSharedFile(event.data.file);
+        }
+    });
+
+    function handleFileSelect() {
+        const file = fileInput.files[0];
+        handleSharedFile(file);
+    }
+
+    function handleSharedFile(file) {
+        if (!file) {
+            setStatusMessage('No file selected.');
+            return;
+        }
+
+        const validAudioTypes = ['audio/mp3', 'audio/wav', 'audio/aac', 'audio/flac', 'audio/ogg', 'audio/m4a'];
+        const validVideoTypes = ['video/mp4', 'video/x-msvideo', 'video/x-matroska', 'video/quicktime', 'video/webm'];
+
+        if (!validAudioTypes.includes(file.type) && !validVideoTypes.includes(file.type)) {
+            setStatusMessage('Please select a valid audio or video file.');
+            return;
+        }
+
+        progressElement.classList.remove('hidden');
+        statusMessage.textContent = 'Uploading and transcribing...';
+        saveButton.disabled = true;
+        copyButton.disabled = true;
+
+        uploadAndTranscribe(file)
+            .then(response => {
+                transcriptContent.value = response.data.text;
+                statusMessage.textContent = 'Transcription completed!';
+                saveButton.disabled = false;
+                copyButton.disabled = false;
+            })
+            .catch(error => {
+                console.error(error);
+                statusMessage.textContent = 'Error during transcription. Please try again.';
+            })
+            .finally(() => {
+                progressElement.classList.add('hidden');
+            });
+    }
+
+    async function uploadAndTranscribe(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('model', 'whisper-1');
+
+        return await axios.post(
+            'https://api.openai.com/v1/audio/transcriptions',
+            formData,
+            {
+                headers: {
+                    'Authorization': 'Bearer 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',
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    progressElement.value = percentCompleted;
+                }
+            }
+        );
+    }
+
+    saveButton.addEventListener('click', saveTranscription);
+    copyButton.addEventListener('click', copyTranscription);
+
+    function saveTranscription() {
+        if (transcriptContent.value) {
+            const blob = new Blob([transcriptContent.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'transcription.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
+
+    function copyTranscription() {
+        if (transcriptContent.value) {
+            navigator.clipboard.writeText(transcriptContent.value)
+                .then(() => setStatusMessage('Transcription copied to clipboard!'))
+                .catch(err => setStatusMessage('Error copying: ' + err));
+        }
+    }
+
+    function startRecording() {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                setStatusMessage('Recording in progress...');
+                stopRecordBtn.style.display = 'inline-block';
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    uploadAndTranscribe(audioBlob)
+                        .then(response => {
+                            transcriptContent.value = response.data.text;
+                            setStatusMessage('Transcription completed!');
+                            saveButton.disabled = false;
+                            copyButton.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            setStatusMessage('Error during transcription. Please try again.');
+                        })
+                        .finally(() => {
+                            progressElement.classList.add('hidden');
+                        });
+                    audioChunks = [];
+                };
+            })
+            .catch(error => {
+                console.error('Error accessing media devices.', error);
+                alert('Error accessing media devices. Please check your permissions and try again.');
+            });
+    }
+
+    function stopRecording() {
+        mediaRecorder.stop();
+        setStatusMessage('Recording stopped. Transcribing...');
+        stopRecordBtn.style.display = 'none';
+    }
+
+    function setStatusMessage(message) {
+        statusMessage.textContent = message;
+    }
+
+    function showView(viewId) {
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.add('hidden');
+        });
+        document.getElementById(viewId).classList.remove('hidden');
+    }
+});
+</script>
+</body>
+</html>
