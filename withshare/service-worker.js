@@ -1,14 +1,16 @@
-const CACHE_NAME = 'melindaai-cache-v1';
+
+  const CACHE_NAME = 'melindaai-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/icons/android-chrome-192x192.png',
-  '/icons/android-chrome-512x512.png',
-  '/icons/apple-touch-icon.png',
-  '/icons/favicon-32x32.png',
-  '/icons/favicon-16x16.png',
-  '/icons/mstile-150x150.png',
-  '/icons/safari-pinned-tab.svg',
+  './',
+  './index.html',
+
+  './icons/android-chrome-192x192.png',
+  './icons/android-chrome-512x512.png',
+  './icons/apple-touch-icon.png',
+  './icons/favicon-32x32.png',
+  './icons/favicon-16x16.png',
+  './icons/mstile-150x150.png',
+  './icons/safari-pinned-tab.svg',
   // Add any other assets you want to cache
 ];
 
@@ -40,7 +42,7 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SHARE_TARGET') {
+  if (event.data && event.data.type === 'TRANSCRIBE_FILE') {
     handleShareTarget(event.data.files);
   }
 });

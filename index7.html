@@ -1,0 +1,282 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MelindaAI Transcriber</title>
+  <meta name="description" content="Transcribe audio and video files quickly and easily with MelindaAI Transcriber.">
+  <meta name="keywords" content="transcription, audio transcription, video transcription, MelindaAI, AI transcription">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      color: #4a4a4a;
+    }
+
+   
+   .hero {
+      background: #2d3748;
+      color: white;
+      padding: 1rem 1.5rem;
+    }
+   .hero.title {
+      font-size: 2.4em!important;
+    }
+   .hero.subtitle {
+      font-size: 1.6em!important;
+      margin-top:2px!important;
+    }
+   .file.is-centered {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+   .file-label {
+      cursor: pointer;
+    }
+   .progress {
+      margin-top: 1rem;
+    }
+   .transcript-container {
+      padding: 1rem;
+      background: #f7f7f7;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-top: 1rem;
+    }
+   .transcript {
+      font-size: 1.2em;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      white-space: pre-wrap;
+    }
+   .buttons {
+      justify-content: center;
+      margin-top: 1rem;
+    }
+   .footer {
+      background: #2d3748;
+      color: white;
+      padding: 2rem 0;
+    }
+   .footer a {
+      color: white;
+      text-decoration: underline;
+    }
+   .navbar {
+      background: #2d3748;
+      padding: 1rem;
+    }
+   .navbar.navbar.navbar-menu,.navbar.navbar-item {
+      color: gray;
+    }
+   .title1
+    {
+	    color:white!important;
+	    font-weight:bolder;
+	    font-size:1.2em;
+	    opacity:0.9;
+	    }
+   .navbar.navbar-burger {
+      color: white;
+    }
+    @media (max-width: 768px) {
+     .file {
+        width: 100%;
+      }
+     .transcript-container {
+        font-size: 1em;
+      }
+     .hero.title {
+        font-size: 2rem;
+      }
+     .hero.subtitle {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item title1" href="javascript:void(0);" onclick="showView('home')">
+        Melinda<span style="color:lightgray!important;">AI</span>
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('home')">Audio2Text</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('terms')">Terms of Service</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('privacy')">Privacy Policy</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('about')">About Us</a>
+        <a class="navbar-item" href="javascript:void(0);" onclick="showView('contact')">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home" class="view active">
+    <section class="hero is-primary">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title">MelindaAI Transcriber</h1>
+          <h2 class="subtitle">Transcribe audio and video files with the power of AI</h2>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <div class="container">
+        <div class="box">
+          <div class="file is-boxed is-centered">
+            <label class="file-label">
+              <input class="file-input" type="file" id="fileInput" accept="audio/*, video/*">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span style="font-size:1.3em;"class="file-label">Choose a file...</span>
+                <small style="opacity:0.7; font-weight:bolder;">Audio and Video Files Supported!</small>
+              </span>
+            </label>
+          </div>
+          
+          <progress class="progress is-primary" max="100" id="progress" value="0" style="display: none;"></progress>
+          <div id="statusMessage" class="has-text-centered mt-4 mb-4"></div>
+          
+          <div class="transcript-container">
+            <div id="transcript" class="transcript"></div>
+          </div>
+          
+          <div class="buttons has-text-centered mt-4">
+            <button class="button is-primary" id="saveBtn" disabled>
+              <i class="fas fa-save"></i><span class="px-1">  </span>Export Transcription
+            </button>
+            <button class="button is-link" id="copyBtn" disabled>
+              <i class="fas fa-copy"></i> <span class="px-1">  </span>Copy to Clipboard
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- Other sections (terms, privacy, about, contact) remain the same -->
+
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <div class="columns">
+        <div class="column">
+          <p>
+            <span style="color:gray; font-size:1.1em; font-weight:bolder;">MelindaAI Transcriber</span> by <a href="https://melindaai.com">MelindaAI</a>.
+          </p>
+        </div>
+        <div class="column">
+          <p>
+            <a href="javascript:void(0);" onclick="showView('terms')">Terms of Service</a> | <a href="javascript:void(0);" onclick="showView('privacy')">Privacy Policy</a>
+          </p>
+        </div>
+        <div class="column">
+          <p>
+            <a href="javascript:void(0);" onclick="showView('about')">About Us</a> | <a href="javascript:void(0);" onclick="showView('contact')">Contact</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+   
+ To use the OpenAI API for transcription, you'll need to make some changes to your code. Here's the corrected version:
+```html
+<!--... rest of the HTML structure... -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    const progressElement = document.getElementById('progress');
+    const statusMessage = document.getElementById('statusMessage');
+    const transcriptContainer = document.getElementById('transcript');
+    const saveButton = document.getElementById('saveBtn');
+    const copyButton = document.getElementById('copyBtn');
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('audio/') &&!file.type.startsWith('video/')) {
+        alert('Please select an audio or video file.');
+        return;
+      }
+
+      progressElement.style.display = 'block';
+      statusMessage.textContent = 'Uploading and transcribing...';
+      saveButton.disabled = true;
+      copyButton.disabled = true;
+
+      try {
+        // Create a FormData object to send the file to the OpenAI API
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Set your OpenAI API key (replace with your actual API key)
+        const apiKey = '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';
+
+        // Set the API endpoint and headers
+        const endpoint = 'https://api.openai.com/v1/audio/transcriptions';
+        const headers = {
+          'Authorization': `Bearer Bearer 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`,
+          'Content-Type': 'ultipart/form-data',
+        };
+
+        // Send the request to the OpenAI API
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: formData,
+          headers: headers,
+        });
+
+        // Get the transcription text from the response
+        const transcription = await response.json();
+        const transcriptText = transcription.text;
+
+        transcriptContainer.innerText = transcriptText;
+        statusMessage.textContent = 'Transcription completed!';
+        saveButton.disabled = false;
+        copyButton.disabled = false;
+      } catch (error) {
+        console.error(error);
+        statusMessage.textContent = 'Error occurred during transcription.';
+      }
+    });
+
+    saveButton.addEventListener('click', () => {
+      const transcriptText = transcriptContainer.innerText;
+      const blob = new Blob([transcriptText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'transcript.txt';
+      a.click();
+    });
+
+    copyButton.addEventListener('click', () => {
+      const transcriptText = transcriptContainer.innerText;
+      navigator.clipboard.writeText(transcriptText);
+    });
+  });
+</script>
+</body></html>
+
+
+

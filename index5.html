@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MelindaAI Transcriber</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">MelindaAI Transcriber</h1>
+      <input type="file" id="fileInput" accept="audio/*, video/*">
+      <button id="uploadBtn">Upload and Transcribe</button>
+      <div id="statusMessage"></div>
+      <textarea id="transcript" readonly></textarea>
+    </div>
+  </section>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const statusMessage = document.getElementById('statusMessage');
+    const transcriptArea = document.getElementById('transcript');
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const supportedFormats = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'video/mp4', 'video/webm'];
+      if (!supportedFormats.includes(file.type)) {
+        alert('Please select a supported audio or video file.');
+        return;
+      }
+
+      statusMessage.textContent = 'Uploading and transcribing...';
+
+      try {
+        const optimizedAudio = await optimizeAudio(file);
+        const response = await uploadAndTranscribe(optimizedAudio);
+        transcriptArea.value = response.data.text;
+        statusMessage.textContent = 'Transcription completed!';
+      } catch (error) {
+        console.error(error);
+        statusMessage.textContent = 'Error during transcription. Please try again.';
+      }
+    });
+
+    async function optimizeAudio(file) {
+      // Optimizar el audio antes de enviarlo al servidor
+      const audioContext = new AudioContext();
+      const audioSource = audioContext.createMediaSource(file);
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 1.5; // Ajustar el volumen del audio
+      audioSource.connect(gainNode);
+      const optimizedAudio = await audioContext.encodeAudioData(gainNode);
+      return optimizedAudio;
+    }
+
+    async function uploadAndTranscribe(audio) {
+      const formData = new FormData();
+      formData.append('file', audio);
+      formData.append('model', 'whisper-1');
+
+      return await axios.post(
+        'https://api.openai.com/v1/audio/transcriptions',
+        formData,
+        {
+          headers: {
+            'Authorization': 'Bearer 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',
+            'Content-Type': 'ultipart/form-data'
+          }
+        }
+      );
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
